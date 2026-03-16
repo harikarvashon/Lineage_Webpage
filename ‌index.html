@@ -1,0 +1,225 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1200px;
+                 background-color: #FFFFFF;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#009973", "font": {"color": "black"}, "id": "AirBnBListings", "label": "AirBnBListings", "originalColor": "#009973", "physics": false, "shape": "square", "size": 50, "x": 1300, "y": 0}, {"color": "#66CC66", "font": {"color": "black"}, "id": "DimAirBnBListingDetails", "label": "DimAirBnBListingDetails", "originalColor": "#66CC66", "physics": false, "shape": "hexagon", "size": 50, "x": 1900, "y": 0}, {"color": "#9966FF", "font": {"color": "black"}, "id": "AirBnBTab", "label": "AirBnBTab", "originalColor": "#9966FF", "physics": false, "shape": "square", "size": 50, "x": 3100, "y": 0}, {"color": "#CC66FF", "font": {"color": "black"}, "id": "AirBnB_PBIX", "label": "AirBnB_PBIX", "originalColor": "#CC66FF", "physics": false, "shape": "circle", "size": 50, "x": 3400, "y": 0}, {"color": "#66CC66", "font": {"color": "black"}, "id": "FactAirBnBListings", "label": "FactAirBnBListings", "originalColor": "#66CC66", "physics": false, "shape": "hexagon", "size": 50, "x": 1900, "y": 150}, {"color": "#FF66CC", "font": {"color": "black"}, "id": "DimGeography", "label": "DimGeography", "originalColor": "#FF66CC", "physics": false, "shape": "triangleDown", "size": 50, "x": 1600, "y": 0}, {"color": "#FF66CC", "font": {"color": "black"}, "id": "DimGeographyGeospatial", "label": "DimGeographyGeospatial", "originalColor": "#FF66CC", "physics": false, "shape": "triangleDown", "size": 50, "x": 1600, "y": 150}, {"color": "#009973", "font": {"color": "black"}, "id": "AirBnBReviews", "label": "AirBnBReviews", "originalColor": "#009973", "physics": false, "shape": "square", "size": 50, "x": 1300, "y": 150}, {"color": "#66CC66", "font": {"color": "black"}, "id": "FactAirBnBReviews", "label": "FactAirBnBReviews", "originalColor": "#66CC66", "physics": false, "shape": "hexagon", "size": 50, "x": 1900, "y": 300}, {"color": "#FF9933", "font": {"color": "black"}, "id": "Inside AirBnB", "label": "Inside AirBnB", "originalColor": "#FF9933", "physics": false, "shape": "star", "size": 50, "x": 100, "y": 0}, {"color": "#87CEEB", "font": {"color": "black"}, "id": "listings.csv", "label": "listings.csv", "originalColor": "#87CEEB", "physics": false, "shape": "diamond", "size": 50, "x": 400, "y": 0}, {"color": "#87CEEB", "font": {"color": "black"}, "id": "reviews.csv", "label": "reviews.csv", "originalColor": "#87CEEB", "physics": false, "shape": "diamond", "size": 50, "x": 400, "y": 150}, {"color": "#009973", "font": {"color": "black"}, "id": "BusinessSurvivalRates", "label": "BusinessSurvivalRates", "originalColor": "#009973", "physics": false, "shape": "square", "size": 50, "x": 1300, "y": 300}, {"color": "#66CC66", "font": {"color": "black"}, "id": "FactBusinessSurvivalRates", "label": "FactBusinessSurvivalRates", "originalColor": "#66CC66", "physics": false, "shape": "hexagon", "size": 50, "x": 1900, "y": 450}, {"color": "#FF66CC", "font": {"color": "black"}, "id": "DimBoroughs", "label": "DimBoroughs", "originalColor": "#FF66CC", "physics": false, "shape": "triangleDown", "size": 50, "x": 1600, "y": 300}, {"color": "#FF9933", "font": {"color": "black"}, "id": "London Datastore-ONS", "label": "London Datastore-ONS", "originalColor": "#FF9933", "physics": false, "shape": "star", "size": 50, "x": 100, "y": 150}, {"color": "#87CEEB", "font": {"color": "black"}, "id": "business-survival-rates.csv", "label": "business-survival-rates.csv", "originalColor": "#87CEEB", "physics": false, "shape": "diamond", "size": 50, "x": 400, "y": 300}, {"color": "#009973", "font": {"color": "black"}, "id": "CulturalInfrastructure", "label": "CulturalInfrastructure", "originalColor": "#009973", "physics": false, "shape": "square", "size": 50, "x": 1300, "y": 450}, {"color": "#66CC66", "font": {"color": "black"}, "id": "FactCulturalInfrastructure", "label": "FactCulturalInfrastructure", "originalColor": "#66CC66", "physics": false, "shape": "hexagon", "size": 50, "x": 1900, "y": 600}, {"color": "#FF66CC", "font": {"color": "black"}, "id": "LookupCulturalInfrastructureTypes", "label": "LookupCulturalInfrastructureTypes", "originalColor": "#FF66CC", "physics": false, "shape": "triangleDown", "size": 50, "x": 1600, "y": 450}, {"color": "#FF66CC", "font": {"color": "black"}, "id": "DimAddress", "label": "DimAddress", "originalColor": "#FF66CC", "physics": false, "shape": "triangleDown", "size": 50, "x": 1600, "y": 600}, {"color": "#FF66CC", "font": {"color": "black"}, "id": "DimWards", "label": "DimWards", "originalColor": "#FF66CC", "physics": false, "shape": "triangleDown", "size": 50, "x": 1600, "y": 750}, {"color": "#FF9933", "font": {"color": "black"}, "id": "London Datastore-GLA", "label": "London Datastore-GLA", "originalColor": "#FF9933", "physics": false, "shape": "star", "size": 50, "x": 100, "y": 300}, {"color": "#87CEEB", "font": {"color": "black"}, "id": "2023 Commercial galleries (Nov 2023).csv", "label": "2023 Commercial galleries (Nov 2023).csv", "originalColor": "#87CEEB", "physics": false, "shape": "diamond", "size": 50, "x": 400, "y": 450}]);
+                  edges = new vis.DataSet([{"arrows": "to", "arrowsize": 0.5, "from": "AirBnBListings", "physics": false, "to": "DimAirBnBListingDetails", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBListings", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBListings", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimAirBnBListingDetails", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimAirBnBListingDetails", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBTab", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBListings", "physics": false, "to": "FactAirBnBListings", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBListings", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBListings", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBTab", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimAirBnBListingDetails", "physics": false, "to": "FactAirBnBListings", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimAirBnBListingDetails", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimAirBnBListingDetails", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBTab", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimGeography", "physics": false, "to": "FactAirBnBListings", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimGeography", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimGeography", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBTab", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimGeographyGeospatial", "physics": false, "to": "FactAirBnBListings", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimGeographyGeospatial", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimGeographyGeospatial", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBTab", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBReviews", "physics": false, "to": "FactAirBnBReviews", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBReviews", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBReviews", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBReviews", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBReviews", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBTab", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "FactAirBnBReviews", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBListings", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBReviews", "physics": false, "to": "AirBnBTab", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "FactAirBnBReviews", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "AirBnBTab", "physics": false, "to": "AirBnB_PBIX", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "Inside AirBnB", "physics": false, "to": "listings.csv", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "Inside AirBnB", "physics": false, "to": "AirBnBListings", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "listings.csv", "physics": false, "to": "AirBnBListings", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "Inside AirBnB", "physics": false, "to": "reviews.csv", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "Inside AirBnB", "physics": false, "to": "AirBnBReviews", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "reviews.csv", "physics": false, "to": "AirBnBReviews", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "BusinessSurvivalRates", "physics": false, "to": "FactBusinessSurvivalRates", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimBoroughs", "physics": false, "to": "FactBusinessSurvivalRates", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "London Datastore-ONS", "physics": false, "to": "business-survival-rates.csv", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "London Datastore-ONS", "physics": false, "to": "BusinessSurvivalRates", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "business-survival-rates.csv", "physics": false, "to": "BusinessSurvivalRates", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "CulturalInfrastructure", "physics": false, "to": "FactCulturalInfrastructure", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "LookupCulturalInfrastructureTypes", "physics": false, "to": "FactCulturalInfrastructure", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimAddress", "physics": false, "to": "FactCulturalInfrastructure", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimBoroughs", "physics": false, "to": "FactCulturalInfrastructure", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimGeography", "physics": false, "to": "FactCulturalInfrastructure", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "DimWards", "physics": false, "to": "FactCulturalInfrastructure", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "London Datastore-GLA", "physics": false, "to": "2023 Commercial galleries (Nov 2023).csv", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "London Datastore-GLA", "physics": false, "to": "CulturalInfrastructure", "width": 1}, {"arrows": "to", "arrowsize": 0.5, "from": "2023 Commercial galleries (Nov 2023).csv", "physics": false, "to": "CulturalInfrastructure", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+<script>
+const ANCESTORS = {"AirBnBListings": ["listings.csv", "Inside AirBnB"], "DimAirBnBListingDetails": ["listings.csv", "Inside AirBnB", "AirBnBListings"], "AirBnBTab": ["listings.csv", "FactAirBnBListings", "DimGeographyGeospatial", "DimGeography", "AirBnBReviews", "FactAirBnBReviews", "AirBnBListings", "Inside AirBnB", "DimAirBnBListingDetails", "reviews.csv"], "AirBnB_PBIX": ["listings.csv", "FactAirBnBListings", "DimGeographyGeospatial", "DimGeography", "AirBnBReviews", "FactAirBnBReviews", "AirBnBListings", "Inside AirBnB", "DimAirBnBListingDetails", "reviews.csv", "AirBnBTab"], "FactAirBnBListings": ["listings.csv", "DimGeographyGeospatial", "DimGeography", "Inside AirBnB", "AirBnBListings", "DimAirBnBListingDetails"], "DimGeography": [], "DimGeographyGeospatial": [], "AirBnBReviews": ["Inside AirBnB", "reviews.csv"], "FactAirBnBReviews": ["listings.csv", "FactAirBnBListings", "DimGeographyGeospatial", "DimGeography", "AirBnBReviews", "Inside AirBnB", "AirBnBListings", "DimAirBnBListingDetails", "reviews.csv"], "Inside AirBnB": [], "listings.csv": ["Inside AirBnB"], "reviews.csv": ["Inside AirBnB"], "BusinessSurvivalRates": ["London Datastore-ONS", "business-survival-rates.csv"], "FactBusinessSurvivalRates": ["London Datastore-ONS", "BusinessSurvivalRates", "DimBoroughs", "business-survival-rates.csv"], "DimBoroughs": [], "London Datastore-ONS": [], "business-survival-rates.csv": ["London Datastore-ONS"], "CulturalInfrastructure": ["2023 Commercial galleries (Nov 2023).csv", "London Datastore-GLA"], "FactCulturalInfrastructure": ["LookupCulturalInfrastructureTypes", "2023 Commercial galleries (Nov 2023).csv", "DimWards", "London Datastore-GLA", "DimGeography", "CulturalInfrastructure", "DimAddress", "DimBoroughs"], "LookupCulturalInfrastructureTypes": [], "DimAddress": [], "DimWards": [], "London Datastore-GLA": [], "2023 Commercial galleries (Nov 2023).csv": ["London Datastore-GLA"]};
+const DESCENDANTS = {"AirBnBListings": ["AirBnB_PBIX", "FactAirBnBListings", "FactAirBnBReviews", "DimAirBnBListingDetails", "AirBnBTab"], "DimAirBnBListingDetails": ["FactAirBnBReviews", "AirBnB_PBIX", "AirBnBTab", "FactAirBnBListings"], "AirBnBTab": ["AirBnB_PBIX"], "AirBnB_PBIX": [], "FactAirBnBListings": ["FactAirBnBReviews", "AirBnB_PBIX", "AirBnBTab"], "DimGeography": ["FactAirBnBListings", "AirBnB_PBIX", "FactCulturalInfrastructure", "FactAirBnBReviews", "AirBnBTab"], "DimGeographyGeospatial": ["FactAirBnBReviews", "FactAirBnBListings", "AirBnB_PBIX", "AirBnBTab"], "AirBnBReviews": ["FactAirBnBReviews", "AirBnB_PBIX", "AirBnBTab"], "FactAirBnBReviews": ["AirBnB_PBIX", "AirBnBTab"], "Inside AirBnB": ["listings.csv", "AirBnB_PBIX", "FactAirBnBListings", "AirBnBReviews", "FactAirBnBReviews", "AirBnBListings", "DimAirBnBListingDetails", "reviews.csv", "AirBnBTab"], "listings.csv": ["AirBnB_PBIX", "FactAirBnBListings", "FactAirBnBReviews", "AirBnBListings", "DimAirBnBListingDetails", "AirBnBTab"], "reviews.csv": ["AirBnBReviews", "FactAirBnBReviews", "AirBnB_PBIX", "AirBnBTab"], "BusinessSurvivalRates": ["FactBusinessSurvivalRates"], "FactBusinessSurvivalRates": [], "DimBoroughs": ["FactBusinessSurvivalRates", "FactCulturalInfrastructure"], "London Datastore-ONS": ["BusinessSurvivalRates", "FactBusinessSurvivalRates", "business-survival-rates.csv"], "business-survival-rates.csv": ["BusinessSurvivalRates", "FactBusinessSurvivalRates"], "CulturalInfrastructure": ["FactCulturalInfrastructure"], "FactCulturalInfrastructure": [], "LookupCulturalInfrastructureTypes": ["FactCulturalInfrastructure"], "DimAddress": ["FactCulturalInfrastructure"], "DimWards": ["FactCulturalInfrastructure"], "London Datastore-GLA": ["2023 Commercial galleries (Nov 2023).csv", "CulturalInfrastructure", "FactCulturalInfrastructure"], "2023 Commercial galleries (Nov 2023).csv": ["CulturalInfrastructure", "FactCulturalInfrastructure"]};
+
+// Function to highlight node and its lineage
+function highlightNode(params) {
+    if (params.nodes.length === 0) {
+        network.body.data.nodes.update(
+            network.body.data.nodes.get().map(n => {
+                return {id: n.id, color: n.originalColor};
+            })
+        );
+        return;
+    }
+
+    let selected = params.nodes[0];
+    let upstream = ANCESTORS[selected] || [];
+    let downstream = DESCENDANTS[selected] || [];
+
+    network.body.data.nodes.update(
+        network.body.data.nodes.get().map(n => {
+            if (n.id === selected) return {id: n.id, color: "#ff0000"};
+            if (upstream.includes(n.id)) return {id: n.id, color: "#00aa00"};
+            if (downstream.includes(n.id)) return {id: n.id, color: "#0000ff"};
+            return {id: n.id, color: "#cccccc33"};
+        })
+    );
+}
+
+// Function to filter by source system
+function filterSourceSystem() {
+    const dropdown = document.getElementById("sourceFilter");
+    const selectedSource = dropdown.value;
+
+    network.body.data.nodes.update(
+        network.body.data.nodes.get().map(n => {
+            if (!selectedSource) return {id: n.id, color: n.originalColor};
+            if (n.id === selectedSource || ANCESTORS[selectedSource].includes(n.id) || DESCENDANTS[selectedSource].includes(n.id))
+                return {id: n.id, color: n.originalColor};
+            else
+                return {id: n.id, color: "#cccccc33"};
+        })
+    );
+}
+
+// Create dropdown
+const dropdown = document.createElement("select");
+dropdown.id = "sourceFilter";
+dropdown.style.position = "absolute";
+dropdown.style.top = "10px";
+dropdown.style.left = "10px";
+dropdown.style.zIndex = "1000";
+dropdown.style.fontSize = "16px";
+dropdown.onchange = filterSourceSystem;
+
+const defaultOption = document.createElement("option");
+defaultOption.value = "";
+defaultOption.text = "Select Source System";
+dropdown.appendChild(defaultOption);
+
+var opt = document.createElement("option"); opt.value = "Inside AirBnB"; opt.text = "Inside AirBnB"; dropdown.appendChild(opt);
+var opt = document.createElement("option"); opt.value = "London Datastore-ONS"; opt.text = "London Datastore-ONS"; dropdown.appendChild(opt);
+var opt = document.createElement("option"); opt.value = "London Datastore-GLA"; opt.text = "London Datastore-GLA"; dropdown.appendChild(opt);
+
+document.body.appendChild(dropdown);
+
+network.on("click", highlightNode);
+</script>
+
+</body>
+</html>
